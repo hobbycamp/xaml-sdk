@@ -3,16 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
         xmlns:local="clr-namespace:DefiningCustomDataFields"
+        xmlns:wpfApplication1="clr-namespace:WpfApplication1"
         Title="MainWindow" Height="600" Width="700">
     <Grid>
         <Grid.Resources>
-            <DataTemplate x:Key="MyTemplate">
+            <wpfApplication1:IpPresentationToStringConverter x:Key="converter" />
+
+            <DataTemplate x:Key="MyTemplate" DataType="local:Employee">
                 <StackPanel>
                     <telerik:DataFormDataField  Label="First Name" DataMemberBinding="{Binding FirstName, Mode=TwoWay}" />
                     <telerik:DataFormDataField  Label="Last Name" DataMemberBinding="{Binding LastName, Mode=TwoWay}" />
                     <local:DataFormNumericUpDownField Label="Salary" DataMemberBinding="{Binding Salary, Mode=TwoWay}" />
+                    <wpfApplication1:IpAddressField Label="Ip Address" DataMemberBinding="{Binding IpValue, Mode=TwoWay}" />
                 </StackPanel>
             </DataTemplate>
+
+            <Style x:Key="IpMaskedInputStyle" TargetType="{x:Type telerik:RadMaskedTextInput}">
+                <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+                <Setter Property="TextMode" Value="PlainText"></Setter>
+                <Setter Property="Mask" Value="###.###.###.###"></Setter>
+                <Setter Property="Value" Value="{Binding IpValue, Mode=OneWay, ValidatesOnExceptions=True, Converter={StaticResource converter}}" />
+                <Setter Property="Text" Value="{Binding IpText, Mode=OneWayToSource, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}" />
+            </Style>
         </Grid.Resources>
         <telerik:RadDataForm x:Name="DataForm1"
                              AutoGenerateFields="False"
